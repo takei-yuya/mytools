@@ -13,18 +13,22 @@ const std::string kDummySuffix_strftime = " ";
 
 const std::string kDefaultPrefix = "%F %T%t";
 const std::string kDefaultSuffix = "";
+const bool kDefaultUseLocalTime = false;
 
 struct Options {
   std::string prefix;
   std::string suffix;
+  bool use_localtime;
 };
 
 void Usage(std::ostream& out, int argc, char** argv) {
   out
     << "Usage: " << argv[0] << " [OPTIONS]" << std::endl
+    << "Add prefix and suffix per eachline. prefix and suffix parsed by strftime." << std::endl
     << std::endl
     << "  -p, --prefix=PREFIX   Insert PREFIX before each line. [default: '" << kDefaultPrefix << "']" << std::endl
     << "  -s, --suffix=SUFFIX   Append SUFFIX after each line. [default: '" << kDefaultSuffix << "']" << std::endl
+    << "  -l, --localtime       Use localtime to generate prefix/suffix instead of gmtime." << std::endl
     ;
 }
 
@@ -42,7 +46,11 @@ void Timestamper(const Options& options, std::istream& in, std::ostream& out) {
   while (std::getline(in, line)) {
     time_t t = time(NULL);
     struct tm tm;
-    gmtime_r(&t, &tm);
+    if (options.use_localtime) {
+      localtime_r(&t, &tm);
+    } else {
+      gmtime_r(&t, &tm);
+    }
 
     out
       << FormatTime(options.prefix, tm)
@@ -56,16 +64,18 @@ int main(int argc, char **argv) {
   Options options;
   options.prefix = kDefaultPrefix;
   options.suffix = kDefaultSuffix;
+  options.use_localtime = kDefaultUseLocalTime;
 
   while (true) {
     static struct option log_options[] = {
       { "prefix", required_argument, 0, 'p' },
       { "suffix", required_argument, 0, 's' },
+      { "localtime", no_argument, 0, 'l' },
       { "help", no_argument, 0, '!' },
       { 0, 0, 0, 0 },
     };
 
-    int c = getopt_long(argc, argv, "p:s:", log_options, NULL);
+    int c = getopt_long(argc, argv, "p:s:l", log_options, NULL);
     if (c == -1) break;
 
     switch(c) {
@@ -75,6 +85,10 @@ int main(int argc, char **argv) {
 
     case 's':
       options.suffix = optarg;
+      break;
+
+    case 'l':
+      options.use_localtime = true;
       break;
 
     case '!':
