@@ -1,0 +1,37 @@
+# http://www.gnu.org/software/automake
+
+Makefile.in
+
+# http://www.gnu.org/software/autoconf
+
+/autom4te.cache
+/aclocal.m4
+/compile
+/configure
+/depcomp
+/install-sh
+/missing
+/stamp-h1
+
+# ---- Misc ----
+
+/configure.scan
+/build-aux/
+/libtool
+/Makefile
+/config.status
+/config.h
+/config.h.in
+
+*.la
+*.lo
+*.a
+*.o
+*.log
+.deps/
+.libs/
+
+# ---- Binary ----
+
+/src/timestamper
+/src/Makefile
