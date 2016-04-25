@@ -34,4 +34,5 @@ Makefile.in
 # ---- Binary ----
 
 /src/timestamper
+/src/paster
 /src/Makefile
