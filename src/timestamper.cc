@@ -5,8 +5,7 @@
 
 #include <getopt.h>
 
-
-// NOTE:
+// NOTE: #strftime_empty_output
 //   Since there are no way to detect strftime is failed by short buffer or generate empty string successfully,
 //   add dummy suffix not to generate empty string.
 const std::string kDummySuffix_strftime = " ";
@@ -16,26 +15,34 @@ const std::string kDefaultSuffix = "";
 const bool kDefaultUseLocalTime = false;
 
 struct Options {
+  Options()
+    : prefix(kDefaultPrefix)
+    , suffix(kDefaultSuffix)
+    , use_localtime(kDefaultUseLocalTime) {
+  }
   std::string prefix;
   std::string suffix;
   bool use_localtime;
 };
 
 void Usage(std::ostream& out, int argc, char** argv) {
+  Options options;  // default options
   out
     << "Usage: " << argv[0] << " [OPTIONS]" << std::endl
     << "Add prefix and suffix per eachline. prefix and suffix parsed by strftime." << std::endl
     << std::endl
-    << "  -p, --prefix=PREFIX   Insert PREFIX before each line. [default: '" << kDefaultPrefix << "']" << std::endl
-    << "  -s, --suffix=SUFFIX   Append SUFFIX after each line. [default: '" << kDefaultSuffix << "']" << std::endl
+    << "  -p, --prefix=PREFIX   Insert PREFIX before each line. [default: '" << options.prefix << "']" << std::endl
+    << "  -s, --suffix=SUFFIX   Append SUFFIX after each line. [default: '" << options.suffix << "']" << std::endl
     << "  -l, --localtime       Use localtime to generate prefix/suffix instead of gmtime." << std::endl
     ;
 }
 
 std::string FormatTime(const std::string& str, const struct tm& tm) {
+  const std::string format = str + kDummySuffix_strftime; // #strftime_empty_output
+
   std::vector<char> buf(128);
   size_t sz;
-  while ((sz = strftime(buf.data(), buf.size(), (str + kDummySuffix_strftime).c_str(), &tm)) == 0) {
+  while ((sz = strftime(buf.data(), buf.size(), format.c_str(), &tm)) == 0) {
     buf.resize(buf.size() * 2 + 1);
   }
   return std::string(buf.data(), sz - kDummySuffix_strftime.size());
@@ -62,9 +69,6 @@ void Timestamper(const Options& options, std::istream& in, std::ostream& out) {
 
 int main(int argc, char **argv) {
   Options options;
-  options.prefix = kDefaultPrefix;
-  options.suffix = kDefaultSuffix;
-  options.use_localtime = kDefaultUseLocalTime;
 
   while (true) {
     static struct option log_options[] = {
