@@ -36,15 +36,19 @@ std::string UnescapeControls(const std::string& str) {
 }
 
 struct Options {
+  Options()
+    : delimiter(kDefaultDelimiter) {
+  }
   std::string delimiter;
 };
 
 void Usage(std::ostream& out, int argc, char** argv) {
+  Options options;  // default options
   out
     << "Usage: " << argv[0] << " [OPTIONS] [FILES]..." << std::endl
     << "Like paste(1), join FILES horizontally with delimiter, but stop at the end of shortest file." << std::endl
     << std::endl
-    << "  -d, --delimiter=DELIM Paster lines with DELIM [default: '" << kDefaultDelimiter << "']" << std::endl
+    << "  -d, --delimiter=DELIM Paster lines with DELIM [default: '" << options.delimiter << "']" << std::endl
     ;
 }
 
@@ -66,11 +70,12 @@ bool GetLineSet(std::vector<std::istream*>& ins, std::vector<std::string>& lines
 }
 
 void Paster(const Options& options, std::vector<std::istream*>& ins, std::ostream& out) {
+  const std::string delimiter = UnescapeControls(options.delimiter);
   std::vector<std::string> lines;
   while(GetLineSet(ins, lines)) {
     for (std::vector<std::string>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
       if (it != lines.begin()) {
-        out << options.delimiter;
+        out << delimiter;
       }
       out << *it;
     }
@@ -80,7 +85,6 @@ void Paster(const Options& options, std::vector<std::istream*>& ins, std::ostrea
 
 int main(int argc, char** argv) {
   Options options;
-  options.delimiter = "\t";
 
   while (true) {
     static struct option log_options[] = {
@@ -123,7 +127,6 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  options.delimiter = UnescapeControls(options.delimiter);
   Paster(options, ins, std::cout);
 
   while (!ins.empty()) {
