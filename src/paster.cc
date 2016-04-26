@@ -10,6 +10,7 @@ const std::string kDefaultDelimiter = "\\t";
 
 std::string UnescapeControls(const std::string& str) {
   std::string result;
+  result.reserve(str.size());
   for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
     if (*it != '\\') {
       result += *it;
@@ -52,10 +53,10 @@ bool GetLineSet(std::vector<std::istream*>& ins, std::vector<std::string>& lines
   if (ins.empty()) {
     return false;
   }
+
   for (std::vector<std::istream*>::iterator it = ins.begin(); it != ins.end(); ++it) {
     std::string line;
-    bool is_ok = std::getline(**it, line);
-    if (!is_ok) {
+    if (!std::getline(**it, line)) {
       return false;
     }
     ls.push_back(line);
