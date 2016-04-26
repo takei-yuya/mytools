@@ -9,6 +9,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([foreign dist-bzip2 no-dist-gzip])
 
+AM_EXTRA_RECURSIVE_TARGETS([lint])
+
 # Checks for programs.
 AC_PROG_CXX
 

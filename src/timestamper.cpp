@@ -1,9 +1,9 @@
+#include <getopt.h>
+
 #include <iostream>
 #include <string>
 #include <vector>
 #include <ctime>
-
-#include <getopt.h>
 
 // NOTE: #strftime_empty_output
 //   Since there are no way to detect strftime is failed by short buffer or generate empty string successfully,
@@ -33,12 +33,11 @@ void Usage(std::ostream& out, int argc, char** argv) {
     << std::endl
     << "  -p, --prefix=PREFIX   Insert PREFIX before each line. [default: '" << options.prefix << "']" << std::endl
     << "  -s, --suffix=SUFFIX   Append SUFFIX after each line. [default: '" << options.suffix << "']" << std::endl
-    << "  -l, --localtime       Use localtime to generate prefix/suffix instead of gmtime." << std::endl
-    ;
+    << "  -l, --localtime       Use localtime to generate prefix/suffix instead of gmtime." << std::endl;
 }
 
 std::string FormatTime(const std::string& str, const struct tm& tm) {
-  const std::string format = str + kDummySuffix_strftime; // #strftime_empty_output
+  const std::string format = str + kDummySuffix_strftime;  // #strftime_empty_output
 
   std::vector<char> buf(128);
   size_t sz;
@@ -82,7 +81,7 @@ int main(int argc, char **argv) {
     int c = getopt_long(argc, argv, "p:s:l", log_options, NULL);
     if (c == -1) break;
 
-    switch(c) {
+    switch (c) {
     case 'p':
       options.prefix = optarg;
       break;

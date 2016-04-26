@@ -1,10 +1,10 @@
+#include <getopt.h>
+
 #include <iostream>
 #include <fstream>
 
 #include <vector>
 #include <string>
-
-#include <getopt.h>
 
 const std::string kDefaultDelimiter = "\\t";
 
@@ -48,8 +48,7 @@ void Usage(std::ostream& out, int argc, char** argv) {
     << "Usage: " << argv[0] << " [OPTIONS] [FILES]..." << std::endl
     << "Like paste(1), join FILES horizontally with delimiter, but stop at the end of shortest file." << std::endl
     << std::endl
-    << "  -d, --delimiter=DELIM Paster lines with DELIM [default: '" << options.delimiter << "']" << std::endl
-    ;
+    << "  -d, --delimiter=DELIM Paster lines with DELIM [default: '" << options.delimiter << "']" << std::endl;
 }
 
 bool GetLineSet(std::vector<std::istream*>& ins, std::vector<std::string>& lines) {
@@ -72,7 +71,7 @@ bool GetLineSet(std::vector<std::istream*>& ins, std::vector<std::string>& lines
 void Paster(const Options& options, std::vector<std::istream*>& ins, std::ostream& out) {
   const std::string delimiter = UnescapeControls(options.delimiter);
   std::vector<std::string> lines;
-  while(GetLineSet(ins, lines)) {
+  while (GetLineSet(ins, lines)) {
     for (std::vector<std::string>::const_iterator it = lines.begin(); it != lines.end(); ++it) {
       if (it != lines.begin()) {
         out << delimiter;
@@ -96,7 +95,7 @@ int main(int argc, char** argv) {
     int c = getopt_long(argc, argv, "d:", log_options, NULL);
     if (c == -1) break;
 
-    switch(c) {
+    switch (c) {
     case 'd':
       options.delimiter = optarg;
       break;
