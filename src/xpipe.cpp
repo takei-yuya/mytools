@@ -22,7 +22,7 @@ struct Options {
 void Usage(std::ostream& out, int argc, char** argv) {
   Options options;  // default options
   out
-    << "Usage: " << argv[0] << " [OPTIONS]... -- COMMAND [ARGS]..." << std::endl
+    << "Usage: " << argv[0] << " [OPTIONS]... COMMAND [ARGS]..." << std::endl
     << "Run COMMAND and send data from input" << std::endl
     << std::endl
     << "  -l, --line=LINE       Run COMMAND per input LINE lines.[default: " << options.line << "]" << std::endl
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
       { 0, 0, 0, 0 },
     };
 
-    int c = getopt_long(argc, argv, "l:w", log_options, NULL);
+    int c = getopt_long(argc, argv, "+l:w", log_options, NULL);
     if (c == -1) break;
 
     switch (c) {
