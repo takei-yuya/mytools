@@ -35,4 +35,5 @@ Makefile.in
 
 /src/timestamper
 /src/paster
+/src/xpipe
 /src/Makefile
